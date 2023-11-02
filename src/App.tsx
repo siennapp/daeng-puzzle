@@ -189,7 +189,7 @@ export default App;
 
 const Container = styled.div`
   width:100%;
-  min-height: 100vh; 
+  height: 100%;
   background: #ffffff;
   display: flex;
   justify-content: center;
