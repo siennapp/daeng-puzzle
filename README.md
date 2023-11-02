@@ -1,46 +1,19 @@
-# Getting Started with Create React App
+# 댕댕이 퍼즐
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 프로젝트 설명
+![스크린화면](./screen.png)
+- 아래 퍼즐 조각을 퍼즐판의 올바른 위치에 드래그 앤 드롭 했을시 위치에 고정이 됩니다. 올바르지 않은 위치일 시 퍼즐 조각이 원래 자리로 돌아갑니다. 
+- **리프레쉬 버튼** 클릭시 모든 퍼즐 조각이 원래 자리로 돌아갑니다.
+- 항목의 내용 **새로운 퍼즐 버튼**을 클릭할 시 새로운 사진의 퍼즐이 로드 됩니다. 
 
-## Available Scripts
+## 프로젝트 실행 방법
 
-In the project directory, you can run:
+`git clone` 후, `npm install & npm start` 명령어를 통해서 실행하세요.
 
-### `npm start`
+## 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+프로젝트에서 사용한 라이브러리와 API정보는 다음과 같습니다.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- React , typescirpt
+- Styled Components
+- 강아지 사진 API : [https://dog.ceo/dog-api/](https://dog.ceo/dog-api/)

@@ -1,13 +1,35 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400&display=swap');
+
+*{
+  margin: 0; padding:0;
+  box-sizing: border-box;
+}
+html,body {
+  width: 100%; 
+  height: 100%;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+button{
+  font-weight: bold;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+h1{
+  margin-bottom : 2vh;
+  font-size: 1.5rem;
+}
+h2{
+  font-size: 1.125rem;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+ul{
+  list-style: none;
 }
