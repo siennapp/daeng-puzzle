@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/daeng-puzzle/static/css/main.6149a9ef.css",
-    "main.js": "/daeng-puzzle/static/js/main.3612d834.js",
+    "main.js": "/daeng-puzzle/static/js/main.9636dcf1.js",
     "static/js/787.1fc75a35.chunk.js": "/daeng-puzzle/static/js/787.1fc75a35.chunk.js",
     "index.html": "/daeng-puzzle/index.html",
     "main.6149a9ef.css.map": "/daeng-puzzle/static/css/main.6149a9ef.css.map",
-    "main.3612d834.js.map": "/daeng-puzzle/static/js/main.3612d834.js.map",
+    "main.9636dcf1.js.map": "/daeng-puzzle/static/js/main.9636dcf1.js.map",
     "787.1fc75a35.chunk.js.map": "/daeng-puzzle/static/js/787.1fc75a35.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.6149a9ef.css",
-    "static/js/main.3612d834.js"
+    "static/js/main.9636dcf1.js"
   ]
 }
