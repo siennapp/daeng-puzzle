@@ -2,7 +2,7 @@ import { useEffect,  useState } from 'react';
 import styled from 'styled-components';
 import { TbReload } from "react-icons/tb";
 import Loading from './components/Loading';
-import { fetchImg, getImgType } from './utils';
+import { fetchImg, getImgType, getPosition } from './utils';
 
 
 const PuzzleArr:number[] = Array(9).fill(0).map((v,i)=> i );
@@ -10,28 +10,39 @@ const RandomArr =  [...PuzzleArr].sort(()=> Math.random() - 0.5 );
 
 function App() {
   const [dogImg, setDogImg] = useState<{src:string, type:string}>({src:'',type:''})
-  const [cardArr, setCardArr] = useState<number[]>(RandomArr)
-  const [isTouch,setIsTouch] = useState<Boolean | null>(null);
-  const [isClear, setClear] = useState<Boolean>(false);
-  const [imgLoading, setImgLoading] = useState<boolean>(true)
+  const [cardArr, setCardArr] = useState<number[]>(RandomArr);
+  const [isTouch,setIsTouch] = useState<boolean >(false);
+  const [isClear, setClear] = useState<boolean>(false);
+  const [imgLoading, setImgLoading] = useState<boolean>(true);
+
   useEffect(()=>{
+    /*
+      터치스크린일 경우 event trigger : touch
+      PC  event trigger : mouse
+    */
     navigator.maxTouchPoints === 0? setIsTouch(false): setIsTouch(true);
     reloadImage();
+   
   },[])
-  useEffect(()=>{
-    cardArr?.length === 0 ? setClear(true): setClear(false);
-  },[cardArr])
-  const dropAreas = document.querySelectorAll<HTMLElement>('.drop-area') ;
   const startEventTrigger = isTouch ? 'touchstart' : 'mousedown';
   const moveEventTrigger = isTouch ? 'touchmove' : 'mousemove';
   const endEventTrigger = isTouch ? 'touchend' : 'mouseup';
   
-  
+  useEffect(()=>{
+    //퍼즐카드 배열 갯수로 퍼즐 완성유무 판단
+    cardArr?.length === 0 ? setClear(true): setClear(false);
+  },[cardArr])
+
+  const dropAreas = document.querySelectorAll<HTMLElement>('.drop-area') ;
+
   const onDrag = (startEvent: MouseEvent | TouchEvent) => {
-     
-    let matchPuzzle: HTMLElement;
+    if (startEvent.cancelable) startEvent.preventDefault();
+    
     
     const pickedItem = startEvent.target as HTMLElement;
+
+    if( !pickedItem.classList.contains('drag-item')) return;
+
     const pickedNum = pickedItem.dataset.number;
  
     const movingItem = pickedItem.cloneNode(true) as HTMLElement;
@@ -42,100 +53,90 @@ function App() {
     movingItem.style.left = `${itemRect.left}px`;
     
     document.body.appendChild(movingItem );
-
     pickedItem.classList.add('invisible')
-    let puzzleNum :string;
-    const onDragMove = (moveEvent: MouseEvent | TouchEvent) => {
-      const { x, y } = getPosition(startEvent,moveEvent) 
 
+    let matchPuzzleArea: HTMLElement;
+    let puzzleNum :string;
+    const dropAreas = document.querySelectorAll<HTMLElement>('.drop-area') ;
+
+    const onDragMove = (moveEvent: MouseEvent | TouchEvent) => {
+
+      if( moveEvent.cancelable ) moveEvent.preventDefault();
+      
+      const { x, y } = getPosition(isTouch,startEvent,moveEvent);
       movingItem.style.top = `${itemRect.top + y}px`;
       movingItem.style.left = `${itemRect.left + x}px`;
 
-
-   
-      const dropPositionX = itemRect.left + x +itemRect.width/2;
-      const dropPositionY = itemRect.top + y +itemRect.height/2;
+      
+      const dropPositionX = itemRect.left + x + itemRect.width/2;
+      const dropPositionY = itemRect.top + y + itemRect.height/2;
       const dropItems = document.elementsFromPoint(dropPositionX, dropPositionY)
       
       dropAreas.forEach(area => {
         area.classList.remove('hover')
+        // 퍼즐카드 좌표와 근접한 퍼즐 칸 찾기
         let matchArea = dropItems.includes(area);
+
         if(matchArea){
-          area.classList.add('hover')
+          area.classList.add('hover');
           puzzleNum = area.dataset.number as string
-          matchPuzzle = area; 
+          matchPuzzleArea = area; 
         }
       })
       
     }
     const onDragEnd = () => {
       if(pickedNum === puzzleNum){
-        movingItem.classList.remove("moving","drag-item");
-        movingItem.removeAttribute('style');
-        //console.log(movingItem)
-         matchPuzzle.appendChild(movingItem);
+
+         movingItem.classList.remove("moving","drag-item");
+         movingItem.removeAttribute('style');
+         matchPuzzleArea.appendChild(movingItem);
          
+         //퍼즐조각 빼기
          const fileteredArr = cardArr?.filter(v => v !== Number(pickedNum) )
          setCardArr(fileteredArr)
-        //pickedItem.remove();
+        
       } else{
+        //아닐시 원래 자리로 이동
         movingItem.style.top = `${itemRect.top}px`;
         movingItem.style.left = `${itemRect.left}px`;
-        pickedItem.classList.remove('invisible')
+        pickedItem.classList.remove('invisible');
         setTimeout(()=>{
           movingItem.remove();
-        },100)
+        },0)
       }
+
       dropAreas.forEach(area => {
-        area.classList.remove('hover')})
-      document.removeEventListener(moveEventTrigger, onDragMove)
+        area.classList.remove('hover')
+      })
+      document.removeEventListener(moveEventTrigger, onDragMove);
     }
 
-    document.addEventListener(moveEventTrigger, onDragMove)
+    document.addEventListener(moveEventTrigger, onDragMove, { passive: false })
     document.addEventListener(endEventTrigger, onDragEnd, { once: true })
    
    }
-   const getPosition = (sEvent: MouseEvent | TouchEvent, mEvent: MouseEvent | TouchEvent):{x:number,y:number} => {
-    if (isTouch) {
-      const se = sEvent as TouchEvent;
-      const me = mEvent as TouchEvent;
-      return {
-        x: me.touches[0].pageX - se.touches[0].pageX,
-        y: me.touches[0].pageY - se.touches[0].pageY,
-      };
-    }
-    const se = sEvent as MouseEvent;
-    const me = mEvent as MouseEvent;
-    return {
-      x: me.pageX - se.pageX,
-      y: me.pageY - se.pageY,
-    };
-  };
    
-   
+
   useEffect(()=>{
     const dragItems: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>('.drag-item');
     dragItems.forEach(item => item.addEventListener(startEventTrigger, onDrag))
     return () =>  dragItems.forEach(item => item.removeEventListener(startEventTrigger, onDrag))
   })
-
 function reloadImage(){
     onRefresh() 
     setImgLoading(true)
    
     fetchImg()
-    .then( url => {
-      getImgType(url)
-      .then(result => setDogImg({ src: url, type: result }))
-      .then(()=>{
-        setImgLoading(false)
+      .then( url => {
+        //이미지 가로형, 세로형 type 지정해서 퍼즐 이미지 css 맞추기
+        getImgType(url)
+          .then(result => setDogImg({ src: url, type: result }))
+          .then(()=>{
+            setImgLoading(false)
+          })
       })
-    
-    }).catch(err => console.log(err))
-   
-    
   }
-
   function onRefresh(){
     setCardArr(RandomArr);
     dropAreas.forEach(area => {
@@ -146,7 +147,6 @@ function reloadImage(){
     <Container>
       <Wrap>
         <h1>댕댕이 퍼즐 🐾</h1>
-      
         <PuzzleWrap>
           <Refresh onClick={onRefresh}><TbReload color="orange" size={20}/></Refresh>
           {isClear&& <ClearBox>CLEAR!</ClearBox>}
@@ -208,6 +208,7 @@ const Wrap = styled.div`
   flex-direction: column;
   align-items: center;
   overflow: hidden;
+  padding-top: 3vh;
 `
 const Refresh = styled.button`
   width: 30px; 
@@ -292,8 +293,7 @@ const CardWrap = styled.div`
   margin-bottom: 20px;
   @media (max-width: 500px) {
     width: 100vw;
-    /* padding: 0 15px; */
-    height: 120px;
+    height: 110px;
     margin: 20px -15px;
     overflow-x: auto;
     overflow-y: hidden;
@@ -310,14 +310,10 @@ const CardList = styled.div`
     margin: 0px;
   }
   @media (max-width: 500px) {
-    /* margin-left: -15px; 
-    margin-right: -15px; */
     flex-wrap: nowrap;
-
-    /* width: 830px; */
+    padding: 5px;
     height: 100%;
     >div{
-      /* width: 90px !important;  */
       flex-shrink: 0;
     
     }
@@ -339,6 +335,7 @@ const CardItem = styled.div<{bg: string, type:string}>`
     position: fixed; 
     z-index: 55;
     opacity: .9;
+    transform: scale(1);
   }
   &.invisible{
     opacity: 0;
