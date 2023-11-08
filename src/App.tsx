@@ -39,24 +39,30 @@ function App() {
  
   const onDrag = (startEvent: MouseEvent | TouchEvent) => {
     
-
     const moveEventTrigger = isTouch ? 'touchmove' : 'mousemove';
     const endEventTrigger = isTouch ? 'touchend' : 'mouseup';
     const puzzleArea = document.querySelector<HTMLElement>('.puzzle-panel');
     const dropAreas = document.querySelectorAll<HTMLElement>('.drop-area');
     let isMove = false; 
-    
+    let puzzleNum :string | null = null;
+    let matchPuzzleArea: HTMLElement;
+
     const removeHover = () => {
       dropAreas.forEach(dropArea => dropArea.classList.remove('hover'))
     } 
+    const updatePuzzleMatch = ( target: string , isMatch: boolean) => {
+      let coppiedPuzzle = [...matchArr];
+      coppiedPuzzle[Number(target)].matched = isMatch;
+      setMatchArr(coppiedPuzzle);
+    }
 
     if (startEvent.cancelable) startEvent.preventDefault();
   
     const pickedItem = startEvent.target as HTMLElement;
     const pickedNum = pickedItem.dataset.number;
-    if ( !pickedItem.classList.contains('drag-item')) return
+    if ( !pickedItem.classList.contains('drag-item')) return;
     
-    // drag and drop 아이템 만들기
+    // drag and drop clone 아이템 만들기
     const movingItem = pickedItem.cloneNode(true) as HTMLElement;
     const {targetX, targetY } = getTargetPosition(pickedItem);
     
@@ -66,9 +72,7 @@ function App() {
     
     document.body.appendChild(movingItem );
     
-    pickedItem.classList.add('invisible')
-    let puzzleNum :string | null = null;
-    let matchPuzzleArea: HTMLElement;
+    pickedItem.classList.add('invisible');
      
     const onDragMove = (moveEvent: MouseEvent | TouchEvent) => {
       
@@ -104,10 +108,11 @@ function App() {
     }
   
     const onDragEnd = () => {
-      
+
+      //퍼즐판의 원래 퍼즐 제거 
       if(pickedItem.parentElement?.classList.contains('drop-area')){
         if(!isMove){
-          puzzleNum = pickedNum!
+          puzzleNum = pickedNum!;
           matchPuzzleArea = pickedItem.parentElement;
         }
         pickedItem.remove();
@@ -119,19 +124,15 @@ function App() {
         matchPuzzleArea.appendChild(movingItem);
         movingItem.classList.remove('moving');
         
-        if(pickedItem)  pickedItem.classList.replace('invisible','hide'); 
+        if(pickedItem) pickedItem.classList.replace('invisible','hide'); 
 
         if( pickedNum === puzzleNum ) {
-          
-          let coppiedPuzzle = [...matchArr];
-          coppiedPuzzle[Number(pickedNum)].matched = true;
-      
-          setMatchArr(coppiedPuzzle);
+          updatePuzzleMatch(pickedNum, true);
         } 
           
       } else{
       
-        // 다시 카드리스트 자리로 복귀 
+        // 다시 원래 자리로 복귀 
         const puzzlelist = document.querySelector('.card-panel') as HTMLElement;
         const puzzleItem = puzzlelist.querySelector(`.img-${pickedNum}`) as HTMLElement;
         
@@ -147,11 +148,8 @@ function App() {
           movingItem.remove();
           puzzleItem.classList.remove('invisible');
         },200)
-        
-        let coppiedPuzzle = [...matchArr];
-        coppiedPuzzle[Number(pickedNum)].matched = false;
-        setMatchArr(coppiedPuzzle);
-        
+
+        updatePuzzleMatch(pickedNum!, false)
       }
 
       removeHover();
@@ -191,6 +189,7 @@ function App() {
   const generatePuzzleArr = () => {
     const dropAreas = document.querySelectorAll<HTMLElement>('.drop-area');
     dropAreas.forEach( dropArea => dropArea.innerHTML = '')
+    
     setMatchArr([...arr].map( v =>({
       id:v,
       matched: false 
