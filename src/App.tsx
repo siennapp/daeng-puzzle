@@ -30,7 +30,7 @@ function App() {
     return () => document.removeEventListener(startEventTrigger, onDrag);
 
      // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[isTouch])
+  },[matchArr,isTouch])
  
   useEffect(()=>{
     //모든 퍼즐 조각이 알맞은 자리일때 게임 clear
@@ -124,7 +124,7 @@ function App() {
         if( pickedNum === puzzleNum ) {
           
           let coppiedPuzzle = [...matchArr];
-          coppiedPuzzle[Number(puzzleNum)].matched = true;
+          coppiedPuzzle[Number(pickedNum)].matched = true;
       
           setMatchArr(coppiedPuzzle);
         } 
@@ -147,7 +147,6 @@ function App() {
           movingItem.remove();
           puzzleItem.classList.remove('invisible');
         },200)
-
         
         let coppiedPuzzle = [...matchArr];
         coppiedPuzzle[Number(pickedNum)].matched = false;

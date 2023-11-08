@@ -11,7 +11,7 @@ function useResizeDetector ():boolean {
         handleResize()
     },[])
     useEffect(()=>{
-        console.log('resize')
+        
         window.addEventListener('resize',handleResize);
         return () => {
           window.removeEventListener('resize',handleResize)
