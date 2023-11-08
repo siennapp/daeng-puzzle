@@ -1,20 +1,16 @@
-export async function getImgType(source: string) {
+export async function getImgType(source: string) : Promise <string> {
     const img = new Image();
-
     img.src = source;
     await img.decode();
     
     return img.width > img.height ? 'horizontal': 'vertical'
   }
-export async function fetchImg(){
-const response = await fetch('https://dog.ceo/api/breeds/image/random');
-const {message:src} = await response.json();
 
-return src;
-}
 
-export const getPosition = (touched: boolean , sEvent: MouseEvent | TouchEvent, mEvent: MouseEvent | TouchEvent):{x:number,y:number} => {
-  if (touched) {
+export const getPosition = ( sEvent: MouseEvent | TouchEvent, mEvent: MouseEvent | TouchEvent):{x:number,y:number} => {
+  const isTouch = sEvent.type === 'touchstart';
+  
+  if (isTouch ) {
     const se = sEvent as TouchEvent;
     const me = mEvent as TouchEvent;
     return {
@@ -28,4 +24,11 @@ export const getPosition = (touched: boolean , sEvent: MouseEvent | TouchEvent, 
     x: me.pageX - se.pageX,
     y: me.pageY - se.pageY,
   };
+};
+
+export const getTargetPosition = ( target : HTMLElement ):{targetX:number,targetY:number} => {
+  return {
+    targetX: target?.getBoundingClientRect().x,
+    targetY: target?.getBoundingClientRect().y
+  } 
 };

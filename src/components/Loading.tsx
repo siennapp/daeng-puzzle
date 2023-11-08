@@ -1,14 +1,12 @@
 import {AiOutlineLoading3Quarters} from "react-icons/ai"
 import styled, { keyframes } from "styled-components";
 
-
 function Loading(){
     return (
         <LoadingBox>
             <Spinner color="gray" size={30}/>
         </LoadingBox>
     )
-  
 }
 
 export default Loading;
@@ -28,15 +26,11 @@ const rotate = keyframes`
     0%{
         transform: rotate(0);
     }
-    /* 50%{
-        transform: rotate(360deg);
-    } */
+
     100%{
         transform: rotate(360deg);
     }
 `
 const Spinner = styled(AiOutlineLoading3Quarters)`
     animation: ${rotate} 1s infinite;
- 
-    //-o-animation-timing-function: i
 `
